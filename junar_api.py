@@ -5,7 +5,7 @@ import decimal
 class DataStream:
 
     def __init__(self, guid):
-        self.auth_key = 'YOUR_AUTH_KEY'
+        self.auth_key = ''
         self.guid = guid
         self.base_uri = 'http://apisandbox.junar.com'
         self.response = None
@@ -29,8 +29,10 @@ class DataStream:
 
         # create the URL
         query = {'auth_key': self.auth_key}
-        for index in params:
-            query['pArgument%d' % index] = params[index];
+        i = 0
+        for param in params:
+            query['pArgument%d' % i] = param;
+            i = i + 1
 
         if output != '':
             self.output = output
