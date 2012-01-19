@@ -5,7 +5,8 @@ import decimal
 class DataStream:
 
     def __init__(self, guid):
-        self.auth_key = ''
+        # get one at http://www.junar.com/developers/
+        self.auth_key = 'YOUR_AUTH_KEY'
         self.guid = guid
         self.base_uri = 'http://apisandbox.junar.com'
         self.response = None
