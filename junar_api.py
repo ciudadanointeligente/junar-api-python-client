@@ -2,13 +2,21 @@ import urllib
 import json
 import decimal
 
+class Junar:
+    def __init__(self, auth_key, base_uri = 'http://apisandbox.junar.com'):
+        self.auth_key = auth_key
+        self.base_uri = base_uri
+
+    def datastream(self, guid):
+        return DataStream(guid, self.auth_key, self.base_uri)
+
+
 class DataStream:
 
-    def __init__(self, guid):
-        # get one at http://www.junar.com/developers/
-        self.auth_key = 'YOUR_AUTH_KEY'
+    def __init__(self, guid, auth_key, base_uri):
+        self.auth_key = auth_key
+        self.base_uri = base_uri
         self.guid = guid
-        self.base_uri = 'http://apisandbox.junar.com'
         self.response = None
 
         """
@@ -28,8 +36,12 @@ class DataStream:
 
     def invoke(self, params = [], output = ''):
 
+        if not self.auth_key:
+            raise Exception('Please configure your auth_key, get one at http://www.junar.com/developers/')
+
         # create the URL
         query = {'auth_key': self.auth_key}
+
         i = 0
         for param in params:
             query['pArgument%d' % i] = param;
@@ -50,18 +62,16 @@ class DataStream:
 
     def call_uri(self, url):
         # get the url
-        # you could also use cURL here, it has better performance but i dont
-        # know if you have cURL installed
         network_object = urllib.urlopen(self.base_uri + url)
         response       = network_object.read()
+
+        if network_object.getcode() != 200:
+            raise Exception('Error HTTP status code = %s' % network_object.getcode())
 
         # parsing the content
         if self.output in ['', 'prettyjson', 'json_array']:
             self.response = json.loads(response, parse_float=decimal.Decimal)
+        else:
+            self.response = response
 
         return self.response
-
-
-if __name__ == '__main__':
-    datastream = DataStream('TEPCO-STOCK-QUOTE')
-    print datastream.invoke(output = 'json_array')

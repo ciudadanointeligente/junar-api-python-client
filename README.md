@@ -3,7 +3,9 @@ Unofficial API Python Client implementation for the Junar.com API, a service to 
 
 ## Usage ##
 
-    datastream = DataStream('TEPCO-STOCK-QUOTE')
+    import junar_api
+    junar_api_client = junar_api.Junar('MY_AUTH_KEY')
+    datastream = junar_api_client.datastream('GUID')
     print datastream.invoke(output = 'json_array')
 
 ## License ##
