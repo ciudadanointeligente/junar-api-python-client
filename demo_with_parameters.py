@@ -11,6 +11,7 @@ if __name__ == '__main__':
     # the guid (identificator)
     datastream = junar_api_client.datastream(guid)
 
+    # the parameters are the date in chilean format
     response = datastream.invoke(params = ['01/01/2011', '01/12/2011'], output = 'json_array')
     result = response['result']
 
