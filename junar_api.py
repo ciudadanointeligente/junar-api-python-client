@@ -49,6 +49,7 @@ class DataStream:
         - csv
         - tsv
         - excel
+        - xml, prettyjson sister, configuration is not mandatory
         """
 
         if not self.auth_key:
