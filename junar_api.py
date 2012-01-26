@@ -1,5 +1,6 @@
 import urllib
-import json
+try: import simplejson as json
+except ImportError: import json
 import decimal
 
 class Junar:
@@ -49,7 +50,7 @@ class DataStream:
         - csv
         - tsv
         - excel
-        - xml, prettyjson sister, configuration is not mandatory
+        - xml, prettyjson sister, configuration here is not mandatory
         """
 
         if not self.auth_key:
@@ -83,7 +84,8 @@ class DataStream:
         response       = network_object.read()
 
         if network_object.getcode() != 200:
-            raise Exception('Error HTTP status code = %s' % network_object.getcode())
+            json_response = json.loads(response)
+            raise Exception('Error: HTTP %s, %s' % (json_response['error'], json_response['message']))
 
         # parsing the content
         if self.output in ['', 'prettyjson', 'json_array']:
