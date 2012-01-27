@@ -51,6 +51,8 @@ class DataStream:
         - tsv
         - excel
         - xml, prettyjson sister, configuration here is not mandatory
+        page -- a page number, starting by 1, to paginate the results
+        limit -- a limit of rows to be retrieved
         """
 
         if not self.auth_key:
