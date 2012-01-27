@@ -33,7 +33,7 @@ class DataStream:
         self.response = None
         self.output = '';
 
-    def invoke(self, params = [], output = ''):
+    def invoke(self, params = [], output = '', page = None, limit = None):
         """
         Gets the datastream's data.
 
@@ -58,6 +58,10 @@ class DataStream:
 
         # create the URL
         query = {'auth_key': self.auth_key}
+
+        if isinstance(page, int) and isinstance(limit, int):
+            query['page'] = page
+            query['limit'] = limit
 
         i = 0
         for param in params:
