@@ -48,7 +48,6 @@ class Publisher:
         return self.analyze(response)
 
     def analyze(self, response):
-        print response.status
         if response.status == 200:
             import json
             data_from_junar = json.loads(response.read())
