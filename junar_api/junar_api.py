@@ -22,23 +22,41 @@ class Junar:
         to retrieve the the information about this new datastream it retuns a datastream
         refering to this new ds in junar
         '''
-        #TODO
-        #all the part that encodes and retrieves information from junar should be in another class or at leas
-        #in another method
-        import json
-        from urlparse import urlparse
-        from httplib import HTTPConnection
-        import urllib
+        #TODO: Error handling
+        publisher = Publisher(dictionary, self.auth_key, self.base_uri)
+        guid = publisher.publish()
+        if guid is not None:
+            return DataStream(guid, self.auth_key, self.base_uri)
 
-        params = urllib.urlencode(dictionary)
-        headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
-        parsed_uri = urlparse(self.base_uri)
-        conn = HTTPConnection(parsed_uri.netloc)
-        conn.request("POST", "/datastreams/publish", params, headers)
+        return None
+
+class Publisher:
+
+    def __init__(self, dictionary, auth_key, base_uri):
+        import urllib
+        from urlparse import urlparse
+        self.params = urllib.urlencode(dictionary)
+        self.auth_key = auth_key
+        self.base_uri = urlparse(base_uri)
+        self.headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
+
+    def publish(self):
+        from httplib import HTTPConnection
+        conn = HTTPConnection(self.base_uri.netloc)
+        conn.request("POST", "/datastreams/publish", self.params, self.headers)
         response = conn.getresponse()
-        response = json.loads(response.read())
-        guid = response['id']
-        return DataStream(guid, self.auth_key, self.base_uri)
+        return self.analyze(response)
+
+    def analyze(self, response):
+        print response.status
+        if response.status == 200:
+            import json
+            data_from_junar = json.loads(response.read())
+            return data_from_junar['id']
+        return None
+
+
+
 
 
 class DataStream:

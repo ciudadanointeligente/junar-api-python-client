@@ -51,3 +51,20 @@ class PublishingTest(TestCase):
         datastream = junar_api_client.publish(self.dictionary)
         assert isinstance(datastream, junar_api.DataStream)
         assert datastream.guid == self.the_guid
+
+    def test_devuelve_none_si_hay_error(self):
+        with Stub() as HTTPResponseUnAuthorized:
+            from httplib import HTTPResponse
+            HTTPResponse.status >> 401
+
+        with Stub() as conn:
+            from httplib import HTTPConnection
+            conn = HTTPConnection("api.junar.com")
+            conn.request("POST", "/datastreams/publish", self.params, self.headers)
+            conn.getresponse()  >> HTTPResponseUnAuthorized
+
+        junar_api_client = junar_api.Junar(u'THE-AUTH-KEY', base_uri = 'http://api.junar.com')
+        datastream = junar_api_client.publish(self.dictionary)
+        assert datastream is None
+
+
