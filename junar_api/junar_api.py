@@ -16,6 +16,30 @@ class Junar:
         guid -- the guid of the datastream"""
         return DataStream(guid, self.auth_key, self.base_uri)
 
+    def publish(self, dictionary):
+        '''
+        Encodes the dictionary into url form and then it publishes it to the junar API
+        to retrieve the the information about this new datastream it retuns a datastream
+        refering to this new ds in junar
+        '''
+        #TODO
+        #all the part that encodes and retrieves information from junar should be in another class or at leas
+        #in another method
+        import json
+        from urlparse import urlparse
+        from httplib import HTTPConnection
+        import urllib
+
+        params = urllib.urlencode(dictionary)
+        headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
+        parsed_uri = urlparse(self.base_uri)
+        conn = HTTPConnection(parsed_uri.netloc)
+        conn.request("POST", "/datastreams/publish", params, headers)
+        response = conn.getresponse()
+        response = json.loads(response.read())
+        guid = response['id']
+        return DataStream(guid, self.auth_key, self.base_uri)
+
 
 class DataStream:
 
