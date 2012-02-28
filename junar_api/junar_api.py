@@ -28,7 +28,7 @@ class Junar:
         if guid is not None:
             return DataStream(guid, self.auth_key, self.base_uri)
 
-        return None
+        return
 
 class Publisher:
 
@@ -50,9 +50,12 @@ class Publisher:
     def analyze(self, response):
         if response.status == 200:
             import json
-            data_from_junar = json.loads(response.read())
+            try:
+                data_from_junar = json.loads(response.read())
+            except:
+                return
             return data_from_junar['id']
-        return None
+        return
 
 
 
